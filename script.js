@@ -49,9 +49,16 @@ function updateWord() {
 
 function endGame() {
     alert(`Hai indovinato la parola "${wordToGuess}" con ${attempts} tentativi!`);
-    leaderboard.push({ name: username, attempts });
-    leaderboard.sort((a, b) => a.attempts - b.attempts);
-    localStorage.setItem("leaderboard", JSON.stringify(leaderboard));
+    
+    const newEntry = { name: username, attempts };
+    console.log("Salvataggio su Firebase:", newEntry); // Debug
+	firebase.database().ref('leaderboard').push(newEntry, (error) => {
+		if (error) {
+			console.error("Errore durante la scrittura su Firebase:", error);
+		} else {
+			console.log("Dati salvati con successo su Firebase.");
+		}
+	});
     showLeaderboard();
 }
 
@@ -59,21 +66,21 @@ function showLeaderboard() {
     const leaderboardTable = document.getElementById("leaderboardData");
     leaderboardTable.innerHTML = "";
 
-    // Recupera i dati della leaderboard da Firebase
-    firebase.database().ref('leaderboard').on('value', (snapshot) => {
+    firebase.database().ref('leaderboard').once('value', (snapshot) => {
         const data = snapshot.val();
+        if (!data) {
+            console.log("Nessun dato trovato nella leaderboard.");
+            return;
+        }
         const leaderboard = [];
         for (let id in data) {
             leaderboard.push(data[id]);
         }
-        leaderboard.sort((a, b) => a.attempts - b.attempts); // Ordina per tentativi
+        leaderboard.sort((a, b) => a.attempts - b.attempts);
         leaderboard.forEach((entry) => {
             const row = document.createElement("tr");
             row.innerHTML = `<td>${entry.name}</td><td>${entry.attempts}</td>`;
             leaderboardTable.appendChild(row);
         });
     });
-
-    document.getElementById("game").style.display = "none";
-    document.getElementById("leaderboard").style.display = "block";
 }
