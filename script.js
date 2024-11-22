@@ -5,7 +5,6 @@ let username = "";
 let guessedLetters = new Set(); // Per evitare doppie lettere
 
 document.getElementById("restartGame").addEventListener("click", () => {
-    // Reset variabili di gioco
     username = "";
     currentWord = "____";
     attempts = 0;
@@ -14,8 +13,9 @@ document.getElementById("restartGame").addEventListener("click", () => {
     document.getElementById("word").innerText = currentWord;
 
     // Reset UI
-    document.getElementById("leaderboard").style.display = "none"; // Nascondi la leaderboard
-    document.getElementById("popup").style.display = "block"; // Mostra il popup iniziale
+    document.getElementById("feedbackImage").style.display = "none";
+    document.getElementById("leaderboard").style.display = "none";
+    document.getElementById("popup").style.display = "block";
 });
 
 document.getElementById("startGame").addEventListener("click", () => {
@@ -55,9 +55,12 @@ function checkLetter(letter) {
         }
     }
     currentWord = newWord;
-    if (!isCorrect) {
+    if (isCorrect) {
+        updateFeedbackImage("images/happybaby.webp");
+    } else {
         attempts++;
         document.getElementById("attempts").innerText = attempts;
+        updateFeedbackImage("images/angrybaby.webp");
     }
     updateWord();
     if (currentWord === wordToGuess) {
@@ -67,6 +70,12 @@ function checkLetter(letter) {
 
 function updateWord() {
     document.getElementById("word").innerText = currentWord;
+}
+
+function updateFeedbackImage(imageSrc) {
+    const feedbackImage = document.getElementById("feedbackImage");
+    feedbackImage.src = imageSrc;
+    feedbackImage.style.display = "block";
 }
 
 function endGame() {
@@ -79,8 +88,8 @@ function endGame() {
             console.error("Errore durante la scrittura su Firebase:", error);
         } else {
             console.log("Dati salvati con successo su Firebase.");
-            document.getElementById("game").style.display = "none"; // Nascondi il gioco
-            showLeaderboard(message); // Mostra la leaderboard con il messaggio
+            document.getElementById("game").style.display = "none";
+            showLeaderboard(message);
         }
     });
 }
@@ -89,7 +98,6 @@ function showLeaderboard(message) {
     const leaderboardTable = document.getElementById("leaderboardData");
     leaderboardTable.innerHTML = "";
 
-    // Recupera i dati della leaderboard da Firebase
     firebase.database().ref('leaderboard').once('value', (snapshot) => {
         const data = snapshot.val();
         if (!data) {
@@ -100,7 +108,7 @@ function showLeaderboard(message) {
         for (let id in data) {
             leaderboard.push(data[id]);
         }
-        leaderboard.sort((a, b) => a.attempts - b.attempts).slice(0, 10); // Mostra i primi 10
+        leaderboard.sort((a, b) => a.attempts - b.attempts).slice(0, 10);
         leaderboard.forEach((entry) => {
             const row = document.createElement("tr");
             row.innerHTML = `<td>${entry.name}</td><td>${entry.attempts}</td>`;
@@ -108,10 +116,14 @@ function showLeaderboard(message) {
         });
     });
 
-    document.getElementById("game").style.display = "none"; // Nascondi il gioco
-    document.getElementById("leaderboard").style.display = "block"; // Mostra la leaderboard
+    document.getElementById("game").style.display = "none";
+    document.getElementById("leaderboard").style.display = "block";
 
-    // Mostra il messaggio di fine partita
+    // Mostra l'immagine gigante della vittoria
+    const winImage = document.getElementById("winImage");
+    winImage.style.display = "block";
+
+    // Mostra il messaggio
     const messageElement = document.createElement("p");
     messageElement.textContent = message;
     document.getElementById("leaderboard").prepend(messageElement);

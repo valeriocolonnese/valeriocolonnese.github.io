@@ -16,39 +16,41 @@
     <div id="game" style="display: none;">
         <h1>Indovina il nome: <span id="word">____</span></h1>
         <p>Tentativi sbagliati: <span id="attempts">0</span></p>
+        <img id="feedbackImage" src="" alt="" style="display: none;">
         <input type="text" id="letterInput" maxlength="1" placeholder="Inserisci una lettera">
         <button id="submitLetter">Invia</button>
     </div>
 
-	<div id="leaderboard" style="display: none;">
-		<h2>Classifica</h2>
-		<table>
-			<thead>
-				<tr>
-					<th>Nome</th>
-					<th>Tentativi</th>
-				</tr>
-			</thead>
-			<tbody id="leaderboardData"></tbody>
-		</table>
-		<button id="restartGame">Ricomincia</button>
-	</div>
+    <div id="leaderboard" style="display: none;">
+        <h2>Classifica</h2>
+        <img id="winImage" src="images/giantbaby.webp" alt="Baby" style="display: none;">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Tentativi</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardData"></tbody>
+        </table>
+        <button id="restartGame">Ricomincia</button>
+    </div>
 
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
-	<script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
-	<script src="script.js"></script>
-	<script>
-		const firebaseConfig = {
-		  apiKey: "AIzaSyB5AwGxjR4KdTOoD8bh_oKHyOsyaltipOY",
-		  authDomain: "thename-e2496.firebaseapp.com",
-		  databaseURL: "https://thename-e2496-default-rtdb.europe-west1.firebasedatabase.app",
-		  projectId: "thename-e2496",
-		  storageBucket: "thename-e2496.firebasestorage.app",
-		  messagingSenderId: "702531579276",
-		  appId: "1:702531579276:web:dbf50683a73adcaf957aa9"
-		};
-		const app = firebase.initializeApp(firebaseConfig);
-		const database = firebase.database();
-	</script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+    <script src="script.js"></script>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB5AwGxjR4KdTOoD8bh_oKHyOsyaltipOY",
+            authDomain: "thename-e2496.firebaseapp.com",
+            databaseURL: "https://thename-e2496-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "thename-e2496",
+            storageBucket: "thename-e2496.firebasestorage.app",
+            messagingSenderId: "702531579276",
+            appId: "1:702531579276:web:dbf50683a73adcaf957aa9"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
 </body>
 </html>
