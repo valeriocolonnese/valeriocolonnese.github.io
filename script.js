@@ -13,7 +13,7 @@ document.getElementById("restartGame").addEventListener("click", () => {
     document.getElementById("word").innerText = currentWord;
 
     // Reset immagini e UI
-    updateFeedbackImage("images/thinkingbaby.webp");
+    updateFeedbackImage("images/thinkingbaby.png");
     document.getElementById("leaderboard").style.display = "none";
     document.getElementById("popup").style.display = "block";
 });
@@ -56,11 +56,11 @@ function checkLetter(letter) {
     }
     currentWord = newWord;
     if (isCorrect) {
-        updateFeedbackImage("images/happybaby.webp");
+        updateFeedbackImage("images/happybaby.png");
     } else {
         attempts++;
         document.getElementById("attempts").innerText = attempts;
-        updateFeedbackImage("images/angrybaby.webp");
+        updateFeedbackImage("images/angrybaby.png");
     }
     updateWord();
     if (currentWord === wordToGuess) {
