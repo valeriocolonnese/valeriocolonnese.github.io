@@ -58,11 +58,23 @@ function endGame() {
 function showLeaderboard() {
     const leaderboardTable = document.getElementById("leaderboardData");
     leaderboardTable.innerHTML = "";
-    leaderboard.forEach((entry) => {
-        const row = document.createElement("tr");
-        row.innerHTML = `<td>${entry.name}</td><td>${entry.attempts}</td>`;
-        leaderboardTable.appendChild(row);
-    });
+
+    firebase.database().ref('leaderboard').on('value', (snapshot) => {
+		const leaderboardTable = document.getElementById("leaderboardData");
+		leaderboardTable.innerHTML = "";
+		const data = snapshot.val();
+		const leaderboard = [];
+		for (let id in data) {
+			leaderboard.push(data[id]);
+		}
+		leaderboard.sort((a, b) => a.attempts - b.attempts);
+		leaderboard.forEach((entry) => {
+			const row = document.createElement("tr");
+			row.innerHTML = `<td>${entry.name}</td><td>${entry.attempts}</td>`;
+			leaderboardTable.appendChild(row);
+		});
+	});
+
     document.getElementById("game").style.display = "none";
     document.getElementById("leaderboard").style.display = "block";
 }
