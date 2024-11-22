@@ -1,15 +1,38 @@
-<html>
-	<head>
-		<title>Prof. Valerio Colonnese</title>
-	</head>
-	<body>
-		<header>
-			<h1>Prof. Valerio Colonnese</h1>
-		</header>
-		<main>
-		</main>
-		<footer>
-			<p>&copy; Valerio Colonnese</p>
-		</footer>
-	</body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indovina il nome!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="popup">
+        <h2>Inserisci il tuo nome:</h2>
+        <input type="text" id="username" placeholder="Il tuo nome">
+        <button id="startGame">Inizia</button>
+    </div>
+
+    <div id="game" style="display: none;">
+        <h1>Indovina il nome: <span id="word">____</span></h1>
+        <p>Tentativi sbagliati: <span id="attempts">0</span></p>
+        <input type="text" id="letterInput" maxlength="1" placeholder="Inserisci una lettera">
+        <button id="submitLetter">Invia</button>
+    </div>
+
+    <div id="leaderboard" style="display: none;">
+        <h2>Classifica</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Tentativi</th>
+                </tr>
+            </thead>
+            <tbody id="leaderboardData"></tbody>
+        </table>
+    </div>
+
+    <script src="script.js"></script>
+</body>
 </html>
