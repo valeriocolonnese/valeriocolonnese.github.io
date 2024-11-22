@@ -2,7 +2,7 @@ const wordToGuess = "NOVA";
 let currentWord = "____";
 let attempts = 0;
 let username = "";
-let guessedLetters = new Set(); // Per evitare doppie lettere
+let guessedLetters = new Set();
 
 document.getElementById("restartGame").addEventListener("click", () => {
     username = "";
@@ -12,8 +12,8 @@ document.getElementById("restartGame").addEventListener("click", () => {
     document.getElementById("attempts").innerText = attempts;
     document.getElementById("word").innerText = currentWord;
 
-    // Reset UI
-    document.getElementById("feedbackImage").style.display = "none";
+    // Reset immagini e UI
+    updateFeedbackImage("images/thinkingbaby.webp");
     document.getElementById("leaderboard").style.display = "none";
     document.getElementById("popup").style.display = "block";
 });
@@ -75,7 +75,6 @@ function updateWord() {
 function updateFeedbackImage(imageSrc) {
     const feedbackImage = document.getElementById("feedbackImage");
     feedbackImage.src = imageSrc;
-    feedbackImage.style.display = "block";
 }
 
 function endGame() {
@@ -119,11 +118,9 @@ function showLeaderboard(message) {
     document.getElementById("game").style.display = "none";
     document.getElementById("leaderboard").style.display = "block";
 
-    // Mostra l'immagine gigante della vittoria
     const winImage = document.getElementById("winImage");
     winImage.style.display = "block";
 
-    // Mostra il messaggio
     const messageElement = document.createElement("p");
     messageElement.textContent = message;
     document.getElementById("leaderboard").prepend(messageElement);
