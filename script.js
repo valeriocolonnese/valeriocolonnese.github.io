@@ -78,7 +78,7 @@ function updateFeedbackImage(imageSrc) {
 }
 
 function endGame() {
-    const message = `Hai indovinato la parola "${wordToGuess}" con ${attempts} tentativi!`;
+    const message = `Hai indovinato il nome con ${attempts} tentativi!`;
     alert(message);
 
     const newEntry = { name: username, attempts };
