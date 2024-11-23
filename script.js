@@ -75,7 +75,19 @@ function endGame() {
             console.error("Errore durante la scrittura su Firebase:", error);
         } else {
             console.log("Dati salvati con successo su Firebase.");
+
+            // Mostra l'immagine gigante della vittoria
+            const winImage = document.getElementById("winImage");
+            if (winImage) {
+                winImage.style.display = "block";
+            }
+
+            // Nascondi il gioco
             document.getElementById("game").style.display = "none";
+
+            // Carica la leaderboard
+            showLeaderboard(message);
         }
     });
 }
+
