@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="it">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
 <body>
     <div id="leaderboard">
         <h1>Classifica</h1>
-		<img id="winImage" src="images/giantbaby.png" alt="Congratulazioni!" style="display: none;">
+        <img id="winImage" src="images/giantbaby.png" alt="Congratulazioni!">
         <table>
             <thead>
                 <tr>
@@ -24,21 +24,30 @@
         </footer>
     </div>
 
+    <footer>
+        <p>&copy; V.Colonnese e D.Trambarulo</p>
+    </footer>
+
+    <!-- Firebase -->
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+    <!-- Configurazione Firebase -->
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyB5AwGxjR4KdTOoD8bh_oKHyOsyaltipOY",
-            authDomain: "thename-e2496.firebaseapp.com",
-            databaseURL: "https://thename-e2496-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "thename-e2496",
-            storageBucket: "thename-e2496.firebasestorage.app",
-            messagingSenderId: "702531579276",
-            appId: "1:702531579276:web:dbf50683a73adcaf957aa9"
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
         const app = firebase.initializeApp(firebaseConfig);
         const database = firebase.database();
+    </script>
 
+    <script>
         // Carica i dati della leaderboard
         function loadLeaderboard() {
             const leaderboardTable = document.getElementById("leaderboardData");
@@ -64,7 +73,9 @@
         }
 
         // Inizializza la leaderboard quando la pagina è caricata
-        window.onload = loadLeaderboard;
+        window.onload = function() {
+            loadLeaderboard();
+        };
     </script>
 </body>
 </html>

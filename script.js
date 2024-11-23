@@ -76,18 +76,12 @@ function endGame() {
         } else {
             console.log("Dati salvati con successo su Firebase.");
 
-            // Mostra l'immagine gigante della vittoria
-            const winImage = document.getElementById("winImage");
-            if (winImage) {
-                winImage.style.display = "block";
-            }
-
             // Nascondi il gioco
             document.getElementById("game").style.display = "none";
 
-            // Carica la leaderboard
-            showLeaderboard(message);
+            // Mostra lo schermo di vittoria
+            document.getElementById("finalAttempts").innerText = attempts;
+            document.getElementById("winScreen").style.display = "block";
         }
     });
 }
-

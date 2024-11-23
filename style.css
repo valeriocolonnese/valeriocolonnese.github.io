@@ -6,7 +6,7 @@ body {
     color: #aa0055;
 }
 
-#popup, #game, #leaderboard {
+#popup, #game, #leaderboard, #winScreen {
     margin: 20px auto;
     padding: 20px;
     border: 2px solid #aa0055;
@@ -51,7 +51,7 @@ button:hover {
 
 footer {
     margin-top: 20px;
-    font-size: 1.2em;
+    font-size: 1em;
     color: #aa0055;
 }
 
@@ -69,7 +69,6 @@ footer a:hover {
     max-width: 100%;
     height: auto;
     margin: 20px 0;
-    display: none;
     animation: popIn 0.5s ease-in-out;
 }
 
