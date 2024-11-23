@@ -70,18 +70,18 @@ function endGame() {
     alert(message);
 
     const newEntry = { name: username, attempts };
+
+    // Salva i dati su Firebase
     firebase.database().ref('leaderboard').push(newEntry, (error) => {
         if (error) {
             console.error("Errore durante la scrittura su Firebase:", error);
         } else {
             console.log("Dati salvati con successo su Firebase.");
-
-            // Nascondi il gioco
-            document.getElementById("game").style.display = "none";
-
-            // Mostra lo schermo di vittoria
-            document.getElementById("finalAttempts").innerText = attempts;
-            document.getElementById("winScreen").style.display = "block";
         }
     });
+
+    // Nascondi il gioco e mostra la schermata di vittoria
+    document.getElementById("game").style.display = "none";
+    document.getElementById("finalAttempts").innerText = attempts;
+    document.getElementById("winScreen").style.display = "block";
 }
