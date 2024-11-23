@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indovina il nome della neonata!</title>
+    <title>Indovina il nome della nascitura!</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -14,27 +14,16 @@
     </div>
 
     <div id="game" style="display: none;">
-        <h1>Indovina il nome della neonata: <span id="word">____</span></h1>
+        <h1>Indovina il nome della nascitura: <span id="word">____</span></h1>
         <p>Tentativi sbagliati: <span id="attempts">0</span></p>
-        <img id="feedbackImage" src="images/thinkingbaby.png" alt="Thinking Baby">
+        <img id="feedbackImage" src="images/thinkingbaby.webp" alt="Thinking Baby">
         <input type="text" id="letterInput" maxlength="1" placeholder="Inserisci una lettera">
         <button id="submitLetter">Invia</button>
     </div>
 
-    <div id="leaderboard" style="display: none;">
-        <h2>Classifica</h2>
-        <img id="winImage" src="images/giantbaby.png" alt="Baby" style="display: none;">
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Tentativi</th>
-                </tr>
-            </thead>
-            <tbody id="leaderboardData"></tbody>
-        </table>
-        <button id="restartGame">Ricomincia</button>
-    </div>
+    <footer>
+        <a href="leaderboard.html">Vai alla classifica</a>
+    </footer>
 
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
