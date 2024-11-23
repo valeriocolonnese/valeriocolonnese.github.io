@@ -4,23 +4,11 @@ let attempts = 0;
 let username = "";
 let guessedLetters = new Set();
 
-document.getElementById("restartGame").addEventListener("click", () => {
-    username = "";
-    currentWord = "____";
-    attempts = 0;
-    guessedLetters.clear();
-    document.getElementById("attempts").innerText = attempts;
-    document.getElementById("word").innerText = currentWord;
-
-    // Reset immagini e UI
-    updateFeedbackImage("images/thinkingbaby.png");
-    document.getElementById("leaderboard").style.display = "none";
-    document.getElementById("popup").style.display = "block";
-});
-
 document.getElementById("startGame").addEventListener("click", () => {
+    console.log("Bottone Inizia cliccato");
     username = document.getElementById("username").value.trim();
     if (username) {
+        console.log("Nome utente:", username);
         document.getElementById("popup").style.display = "none";
         document.getElementById("game").style.display = "block";
         updateWord();
@@ -88,40 +76,6 @@ function endGame() {
         } else {
             console.log("Dati salvati con successo su Firebase.");
             document.getElementById("game").style.display = "none";
-            showLeaderboard(message);
         }
     });
-}
-
-function showLeaderboard(message) {
-    const leaderboardTable = document.getElementById("leaderboardData");
-    leaderboardTable.innerHTML = "";
-
-    firebase.database().ref('leaderboard').once('value', (snapshot) => {
-        const data = snapshot.val();
-        if (!data) {
-            console.log("Nessun dato trovato nella leaderboard.");
-            return;
-        }
-        const leaderboard = [];
-        for (let id in data) {
-            leaderboard.push(data[id]);
-        }
-        leaderboard.sort((a, b) => a.attempts - b.attempts).slice(0, 10);
-        leaderboard.forEach((entry) => {
-            const row = document.createElement("tr");
-            row.innerHTML = `<td>${entry.name}</td><td>${entry.attempts}</td>`;
-            leaderboardTable.appendChild(row);
-        });
-    });
-
-    document.getElementById("game").style.display = "none";
-    document.getElementById("leaderboard").style.display = "block";
-
-    const winImage = document.getElementById("winImage");
-    winImage.style.display = "block";
-
-    const messageElement = document.createElement("p");
-    messageElement.textContent = message;
-    document.getElementById("leaderboard").prepend(messageElement);
 }
