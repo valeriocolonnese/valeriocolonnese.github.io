@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indovina il nome della nascitura!</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="popup">
+        <h2>Inserisci il tuo nome:</h2>
+        <input type="text" id="username" placeholder="Il tuo nome">
+        <button id="startGame">Inizia</button>
+    </div>
+
+    <div id="game" style="display: none;">
+        <h1>Indovina il nome della nascitura: <span id="word">____</span></h1>
+        <p>Tentativi sbagliati: <span id="attempts">0</span></p>
+        <img id="feedbackImage" src="images/thinkingbaby.png" alt="Thinking Baby">
+        <input type="text" id="letterInput" maxlength="1" placeholder="Inserisci una lettera">
+        <button id="submitLetter">Invia</button>
+    </div>
+
+    <!-- Schermata di vittoria -->
+    <div id="winScreen" style="display: none;">
+        <h1>Hai indovinato!</h1>
+        <p>Hai indovinato il nome con <span id="finalAttempts"></span> tentativi!</p>
+        <img id="winImage" src="images/giantbaby.png" alt="Congratulazioni!">
+        <footer>
+            <a href="leaderboard.html">Vai alla classifica</a>
+        </footer>
+    </div>
+
+    <!-- Footer con link alla classifica e nomi -->
+    <footer>
+        <a href="leaderboard.html">Vai alla classifica</a>
+        <p>&copy; V.Colonnese e D.Trambarulo</p>
+    </footer>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.17.1/firebase-database-compat.js"></script>
+
+    <!-- Configurazione Firebase -->
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyB5AwGxjR4KdTOoD8bh_oKHyOsyaltipOY",
+            authDomain: "thename-e2496.firebaseapp.com",
+            databaseURL: "https://thename-e2496-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "thename-e2496",
+            storageBucket: "thename-e2496.firebasestorage.app",
+            messagingSenderId: "702531579276",
+            appId: "1:702531579276:web:dbf50683a73adcaf957aa9"
+        };
+        const app = firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+    </script>
+
+    <script src="script.js"></script>
+</body>
+</html>
