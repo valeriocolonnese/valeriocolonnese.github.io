@@ -39,7 +39,7 @@ setInterval(() => {
 }, 3000);
 
 function showRandomMessage() {
-  const container = messagesDisplayContainer;
+  const container = document.getElementById('messages-inner-container');
   const randomIndex = Math.floor(Math.random() * messagesArray.length);
   const randomMessage = messagesArray[randomIndex];
 
