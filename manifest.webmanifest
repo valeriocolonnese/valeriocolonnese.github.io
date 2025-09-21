@@ -1,0 +1,15 @@
+{
+    "name": "Dal Bagatto",
+    "short_name": "Dal Bagatto",
+    "start_url": "index.html",
+    "display": "fullscreen",
+    "background_color": "#FFFFFF",
+    "theme_color": "#fff",
+    "description": "Il tuo mazzo di Tarocchi per giocare a Sine Requie",
+    "icons": [{
+      "src": "TemplateData/icons/unity-logo-light.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }]
+  }

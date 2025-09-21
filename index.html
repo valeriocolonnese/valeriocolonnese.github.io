@@ -1,91 +1,105 @@
 <!DOCTYPE html>
-<html lang="it">
-   <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Benvenuta Nova</title>
-      <link rel="stylesheet" href="styles.css">
-      <link rel="icon" type="image/x-icon" href="favicon.ico">
-      <!-- Firebase -->
-      <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-      <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-      <script>
-         const firebaseConfig = {
-         	apiKey: "AIzaSyB5AwGxjR4KdTOoD8bh_oKHyOsyaltipOY",
-         	authDomain: "thename-e2496.firebaseapp.com",
-         	databaseURL: "https://thename-e2496-default-rtdb.europe-west1.firebasedatabase.app",
-         	projectId: "thename-e2496",
-         	storageBucket: "thename-e2496.firebasestorage.app",
-         	messagingSenderId: "702531579276",
-         	appId: "1:702531579276:web:dbf50683a73adcaf957aa9"
-         };
-         const app = firebase.initializeApp(firebaseConfig);
-            const database = firebase.database();
-          
-      </script>
-   </head>
-   <body>
-      <header>
-         <canvas id="sky"></canvas>
-         <h1 id="welcome-text">Una nuova stella è scesa dal firmamento...</h1>
-         <h2 id="nova-text" class="hidden-section transition-opacity">Benvenuta Nova!</h2>
-      </header>
-      <main>
-         <div id="post-stella-container">
-            <!-- Colonna sinistra -->
-            <div id="left-column" style="display:flex; flex-direction:column; gap:20px; flex:1 1 300px; box-sizing:border-box;">
-               <div id="message-form-container" class="hidden-section transition-opacity">
-                  <h3>📩 Lascia un messaggio di auguri</h3>
-                  <form id="message-form">
-                     <label for="message-input">Messaggio:</label><br>
-                     <textarea id="message-input" rows="4" cols="30" required></textarea><br><br>
-                     <label for="name-input">Il tuo nome:</label><br>
-                     <input type="text" id="name-input" required><br><br>
-                     <button type="submit">Invia</button>
-                  </form>
-               </div>
-               <!-- Sezione lista nascita separata -->
-               <div id="lista-nascita-container" class="hidden-section transition-opacity" style="flex:1 1 100px; background: rgba(0,0,0,0.3); padding:20px; border-radius:10px; box-sizing:border-box;">
-                  <section id="lista-nascita" style="margin-top: 20px;">
-                     <a href="https://www.amazon.it/baby-reg/danila-trambarulo-valerio-colonnese-dicembre-2024-potenza/9X482DX0YRP8" 
-                        target="_blank" class="button opposite">
-                     Scopri la nostra lista nascita
-                     </a>
-                     <p>Grazie di cuore, Danila e Valerio</p>
-                  </section>
-               </div>
-            </div>
-            <!-- Colonna centrale -->
-            <div id="central-image-container" class="hidden-section transition-opacity">
-               <img id="happybaby-image" src="images/nova.jpg" alt="Happy Baby">
-            </div>
-            <!-- Colonna destra -->
-            <div id="right-column" style="flex: 1 1 300px; box-sizing: border-box;">
-			  <!-- Card info nascita -->
-			  <div id="info-nascita" class="hidden-section transition-opacity" style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; margin-bottom: 20px;">
-				<center><h2>Nova Colonnese</h2></center>
-				<p>Il <strong>16/12/2024</strong>, alle ore 05:03</p>
-				<p>Dimensioni: <strong>3,28 Kg x 50 cm</strong></p>
-			  </div>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity Web Player | Dal Bagatto</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <link rel="manifest" href="manifest.webmanifest">
+  </head>
+  <body>
+    <div id="unity-container">
+      <canvas id="unity-canvas" width=1920 height=1080 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+    </div>
+    <script>
+      window.addEventListener("load", function () {
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.register("ServiceWorker.js");
+        }
+      });
 
-			  <div id="messages-display-container" class="hidden-section transition-opacity" 
-					 style="background: rgba(0,0,0,0.3); padding: 20px; border-radius: 10px; height:300px; display:flex; flex-direction:column; box-sizing:border-box;">
-				  
-				  <!-- Contenitore interno per i messaggi -->
-				  <div id="messages-inner-container" style="flex:1; position:relative; overflow:hidden;">
-					<!-- messaggi qui -->
-				  </div>
-				  
-				  <!-- Sezione per il bottone in basso -->
-				  <div style="text-align:center; margin-top:10px;">
-					<a href="tutti-messaggi.html" target="_blank" class="button">Vedi tutti i messaggi</a>
-				  </div>
-				  
-				</div>
+      var container = document.querySelector("#unity-container");
+      var canvas = document.querySelector("#unity-canvas");
+      var loadingBar = document.querySelector("#unity-loading-bar");
+      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var warningBanner = document.querySelector("#unity-warning");
 
-			</div>
-         </div>
-      </main>
-      <script src="script.js"></script>
-   </body>
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/WebGL.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/WebGL.data",
+        frameworkUrl: buildUrl + "/WebGL.framework.js",
+        codeUrl: buildUrl + "/WebGL.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "PowerICT",
+        productName: "Dal Bagatto",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+      };
+
+      // By default Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+      }
+
+      canvas.style.background = "url('" + buildUrl + "/WebGL.jpg') center / cover";
+      loadingBar.style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          progressBarFull.style.width = 100 * progress + "%";
+        }).then((unityInstance) => {
+          loadingBar.style.display = "none";
+        }).catch((message) => {
+          alert(message);
+        });
+      };
+      document.body.appendChild(script);
+    </script>
+  </body>
 </html>
