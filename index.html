@@ -66,19 +66,31 @@
 
     const buildUrl = "Build";
     const loaderUrl = buildUrl + "/WebGL.loader.js";
-    const config = {
-      dataUrl: buildUrl + "/WebGL.data",
-      frameworkUrl: buildUrl + "/WebGL.framework.js",
-      codeUrl: buildUrl + "/WebGL.wasm",
-      streamingAssetsUrl: "StreamingAssets",
-      companyName: "PowerICT",
-      productName: "Dal Bagatto",
-      productVersion: "1.0",
-      showBanner: unityShowBanner
-      // lasciamo i default:
-      // matchWebGLToCanvasSize: true
-      // devicePixelRatio: window.devicePixelRatio
-    };
+	const config = {
+		dataUrl: buildUrl + "/WebGL.data",
+		frameworkUrl: buildUrl + "/WebGL.framework.js",
+		codeUrl: buildUrl + "/WebGL.wasm",
+		streamingAssetsUrl: "StreamingAssets",
+		companyName: "PowerICT",
+		productName: "Dal Bagatto",
+		productVersion: "1.0",
+		showBanner: unityShowBanner,
+		devicePixelRatio: 1,               // <--- FISSO
+		matchWebGLToCanvasSize: false      // <--- disaccoppiato
+	};
+
+	function resizeBufferToCSS() {
+	// il buffer (canvas.width/height) = dimensione VISIVA (CSS) * DPR(=1)
+	const w = Math.round(canvas.clientWidth);
+	const h = Math.round(canvas.clientHeight);
+	if (canvas.width !== w) canvas.width = w;
+	if (canvas.height !== h) canvas.height = h;
+	}
+	// Aggiorna buffer su resize/orientamento
+	addEventListener("resize", resizeBufferToCSS);
+	addEventListener("orientationchange", resizeBufferToCSS);
+	// Prima misura
+	resizeBufferToCSS();
 
     loadingBar.style.display = "block";
     const script = document.createElement("script");
@@ -86,6 +98,7 @@
     script.onload = () => {
       createUnityInstance(canvas, config, (progress) => {
         progressBarFull.style.width = (100 * progress) + "%";
+		canvas.oncontextmenu = e => e.preventDefault();
       }).then(() => {
         loadingBar.style.display = "none";
       }).catch(alert);
