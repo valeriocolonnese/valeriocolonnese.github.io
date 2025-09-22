@@ -1,208 +1,96 @@
 <!DOCTYPE html>
 <html lang="en-us">
-  <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Unity Web Player | Dal Bagatto</title>
+<head>
+  <meta charset="utf-8" />
+  <title>Unity Web Player | Dal Bagatto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover">
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="icon" href="TemplateData/favicon.ico" />
+  <style>
+    html, body { margin:0; padding:0; height:100%; background:#000; }
+    /* evita che temi/stylesheet aggiungano padding */
+    *, *::before, *::after { box-sizing: border-box; }
+    #unity-container {
+      position:fixed; inset:0; margin:0; padding:0; overflow:hidden;
+      background:#000;
+    }
+    #unity-canvas {
+      position:absolute; inset:0;
+      width:100vw; height:100vh; /* dimensione VISIVA */
+      display:block; margin:0; padding:0; border:0;
+      background: url("Build/WebGL.jpg") center/cover no-repeat;
+      touch-action:none;
+    }
+    #unity-loading-bar {
+      position:absolute; left:50%; top:50%; transform:translate(-50%,-50%);
+      width:min(60vw,420px); display:none; color:#fff; text-align:center;
+      font:14px system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      pointer-events:none;
+    }
+    #unity-logo { width:120px; height:120px; margin:0 auto 12px;
+      background:url("TemplateData/unity-logo.png") center/contain no-repeat; }
+    #unity-progress-bar-empty { height:10px; background:rgba(255,255,255,.2); border-radius:6px; overflow:hidden; }
+    #unity-progress-bar-full { width:0%; height:100%; background:rgba(255,255,255,.9); transition:width .2s; }
+    #unity-warning { position:absolute; left:0; right:0; top:0; padding:8px 12px; display:none; z-index:10; background:yellow; color:#000; }
+  </style>
+</head>
+<body>
+  <div id="unity-container">
+    <!-- NIENTE width/height come attributi HTML -->
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
 
-    <!-- Manifest & favicon (opzionali) -->
-    <link rel="manifest" href="manifest.webmanifest" />
-    <link rel="shortcut icon" href="TemplateData/favicon.ico" />
-
-    <!-- Viewport: pieno controllo su mobile -->
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1, user-scalable=no, viewport-fit=cover"
-    />
-
-    <!-- Hard reset per evitare padding/margini dei temi (es. GitHub Pages) -->
-    <style>
-      html, body { margin: 0; padding: 0; height: 100%; }
-      /* Azzeriamo wrapper comuni dei temi */
-      .page, .site, .wrapper, .page-content, .post, .container, .content, .inner {
-        margin: 0 !important; padding: 0 !important; border: 0 !important;
-        max-width: none !important;
-      }
-
-      /* Contenitore a pieno schermo */
-      #unity-container {
-        position: fixed;
-        inset: 0;
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        background: #000; /* evita flash bianchi */
-      }
-
-      /* Canvas a piena finestra: dimensione VISIVA (CSS) */
-      #unity-canvas {
-        display: block;
-        position: absolute;
-        inset: 0;
-        width: 100vw;
-        height: 100vh;
-        margin: 0;
-        padding: 0;
-        border: 0;
-        box-sizing: content-box; /* no inflazione dell'area cliccabile */
-        background: url("Build/WebGL.jpg") center center / cover no-repeat;
-        touch-action: none; /* migliora gesti su mobile */
-      }
-
-      /* Barra di caricamento sovrapposta e centrata */
-      #unity-loading-bar {
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: min(60vw, 420px);
-        display: none; /* mostrata via JS */
-        font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        color: #fff;
-        text-align: center;
-        pointer-events: none;
-      }
-
-      #unity-logo {
-        width: 120px;
-        height: 120px;
-        margin: 0 auto 12px;
-        background: url("TemplateData/unity-logo.png") center / contain no-repeat;
-        filter: drop-shadow(0 1px 2px rgba(0,0,0,.6));
-      }
-
-      #unity-progress-bar-empty {
-        height: 10px;
-        background: rgba(255,255,255,.2);
-        border-radius: 6px;
-        overflow: hidden;
-      }
-      #unity-progress-bar-full {
-        width: 0%;
-        height: 100%;
-        background: rgba(255,255,255,.9);
-        transition: width .2s ease;
-      }
-
-      /* Banner avvisi */
-      #unity-warning {
-        position: absolute;
-        left: 0; right: 0; top: 0;
-        padding: 8px 12px;
-        font: 14px/1.3 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-        color: #000;
-        display: none;
-        z-index: 10;
-      }
-    </style>
-  </head>
-
-  <body>
-    <div id="unity-container">
-      <!-- RIMOSSI width/height come attributi per evitare mismatch -->
-      <canvas id="unity-canvas" tabindex="-1"></canvas>
-
-      <div id="unity-loading-bar">
-        <div id="unity-logo" aria-hidden="true"></div>
-        <div id="unity-progress-bar-empty" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-          <div id="unity-progress-bar-full"></div>
-        </div>
+    <div id="unity-loading-bar">
+      <div id="unity-logo" aria-hidden="true"></div>
+      <div id="unity-progress-bar-empty" role="progressbar" aria-valuemin="0" aria-valuemax="100">
+        <div id="unity-progress-bar-full"></div>
       </div>
-
-      <div id="unity-warning"></div>
     </div>
 
-    <script>
-      // Service Worker (opzionale, utile su GitHub Pages)
-      window.addEventListener("load", function () {
-        if ("serviceWorker" in navigator) {
-          navigator.serviceWorker.register("ServiceWorker.js").catch(()=>{});
-        }
-      });
+    <div id="unity-warning"></div>
+  </div>
 
-      const container = document.getElementById("unity-container");
-      const canvas = document.getElementById("unity-canvas");
-      const loadingBar = document.getElementById("unity-loading-bar");
-      const progressBarFull = document.getElementById("unity-progress-bar-full");
-      const warningBanner = document.getElementById("unity-warning");
+  <script>
+    // (opzionale) SW per cache su GitHub Pages
+    addEventListener("load", () => { if ("serviceWorker" in navigator) navigator.serviceWorker.register("ServiceWorker.js").catch(()=>{}); });
 
-      // Banner di warning/error
-      function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? "block" : "none";
-        }
-        const div = document.createElement("div");
-        div.innerHTML = msg;
-        div.style.padding = "10px";
-        div.style.margin = "0";
-        div.style.background = type === "error" ? "red" : "yellow";
-        warningBanner.appendChild(div);
-        if (type !== "error") {
-          setTimeout(() => {
-            warningBanner.removeChild(div);
-            updateBannerVisibility();
-          }, 5000);
-        }
-        updateBannerVisibility();
-      }
+    const canvas = document.getElementById("unity-canvas");
+    const loadingBar = document.getElementById("unity-loading-bar");
+    const progressBarFull = document.getElementById("unity-progress-bar-full");
+    const warningBanner = document.getElementById("unity-warning");
 
-      const buildUrl = "Build";
-      const loaderUrl = buildUrl + "/WebGL.loader.js";
+    function unityShowBanner(msg, type) {
+      warningBanner.textContent = msg;
+      warningBanner.style.display = "block";
+      if (type !== "error") setTimeout(()=> warningBanner.style.display="none", 5000);
+    }
 
-      // Config Unity.
-      // Nota: devicePixelRatio=1 riduce aliasing ma rende coordinate e hitbox ultra-affidabili.
-      // Se vuoi massima nitidezza, prova a impostare  window.__UNITY_DPR = Math.min(2, window.devicePixelRatio || 1);
-      window.__UNITY_DPR = 1;
+    const buildUrl = "Build";
+    const loaderUrl = buildUrl + "/WebGL.loader.js";
+    const config = {
+      dataUrl: buildUrl + "/WebGL.data",
+      frameworkUrl: buildUrl + "/WebGL.framework.js",
+      codeUrl: buildUrl + "/WebGL.wasm",
+      streamingAssetsUrl: "StreamingAssets",
+      companyName: "PowerICT",
+      productName: "Dal Bagatto",
+      productVersion: "1.0",
+      showBanner: unityShowBanner
+      // lasciamo i default:
+      // matchWebGLToCanvasSize: true
+      // devicePixelRatio: window.devicePixelRatio
+    };
 
-      const config = {
-        arguments: [],
-        dataUrl: buildUrl + "/WebGL.data",
-        frameworkUrl: buildUrl + "/WebGL.framework.js",
-        codeUrl: buildUrl + "/WebGL.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "PowerICT",
-        productName: "Dal Bagatto",
-        productVersion: "1.0",
-        showBanner: unityShowBanner,
-        devicePixelRatio: window.__UNITY_DPR,  // <-- chiave per i click corretti
-        // matchWebGLToCanvasSize: true, // (default) lascia che Unity segua il canvas
-      };
-
-      // Barra di caricamento on
-      loadingBar.style.display = "block";
-
-      // Sincronizza il buffer WebGL alla dimensione VISIVA del canvas (CSS) * DPR.
-      function resizeWebGLToDisplaySize() {
-        const dpr = window.__UNITY_DPR || (window.devicePixelRatio || 1);
-        const displayWidth  = Math.round(canvas.clientWidth  * dpr);
-        const displayHeight = Math.round(canvas.clientHeight * dpr);
-        if (canvas.width !== displayWidth)  canvas.width  = displayWidth;
-        if (canvas.height !== displayHeight) canvas.height = displayHeight;
-      }
-
-      // Resize reattivo (anche su orientation change)
-      const ro = new ResizeObserver(() => resizeWebGLToDisplaySize());
-      ro.observe(canvas);
-      window.addEventListener("orientationchange", resizeWebGLToDisplaySize);
-      window.addEventListener("resize", resizeWebGLToDisplaySize);
-      // Prima misura
-      resizeWebGLToDisplaySize();
-
-      // Carica il loader Unity
-      const script = document.createElement("script");
-      script.src = loaderUrl;
-      script.onload = () => {
-        createUnityInstance(canvas, config, (progress) => {
-          progressBarFull.style.width = (100 * progress) + "%";
-        }).then((unityInstance) => {
-          loadingBar.style.display = "none";
-          // Safety: riallinea ancora dopo che Unity ha inizializzato
-          resizeWebGLToDisplaySize();
-        }).catch((message) => {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
-    </script>
-  </body>
+    loadingBar.style.display = "block";
+    const script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = (100 * progress) + "%";
+      }).then(() => {
+        loadingBar.style.display = "none";
+      }).catch(alert);
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
 </html>
