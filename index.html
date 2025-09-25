@@ -4,33 +4,24 @@
     <meta charset="utf-8"/>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
     <title>%UNITY_PRODUCT_NAME%</title>
-    <link rel="shortcut icon" href="TemplateData/favicon.ico"/>
+    <!-- rimuovi o sostituisci se non hai la favicon -->
+    <!-- <link rel="shortcut icon" href="TemplateData/favicon.ico"/> -->
 
-    <!-- Canvas a pieno schermo, zero margini, nessun transform -->
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no"/>
     <style>
       html, body { margin:0; padding:0; height:100%; }
       #unity-container { position:fixed; inset:0; }
       #unity-canvas { display:block; width:100%; height:100%; }
       #unity-loading-bar, #unity-warning { position:absolute; left:0; right:0; }
-      #unity-loading-bar { top: 16px; }
-      #unity-progress-bar-empty {
-        width: 200px; height: 10px; margin: 8px auto; border: 1px solid #999;
-      }
-      #unity-progress-bar-full { width: 0%; height: 100%; background: #999; }
+      #unity-loading-bar { top:16px; }
+      #unity-progress-bar-empty { width:200px; height:10px; margin:8px auto; border:1px solid #999; }
+      #unity-progress-bar-full { width:0%; height:100%; background:#999; }
     </style>
-
-    <!-- Viewport anche su desktop per evitare mismatch -->
-    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no"/>
   </head>
   <body>
     <div id="unity-container">
-      <!-- Nessuna dimensione HTML: Unity sincronizza con CSS -->
-      <canvas id="unity-canvas" tabindex="-1"></canvas>
-
-      <!-- UI di caricamento minimale -->
-      <div id="unity-loading-bar">
-        <div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div>
-      </div>
+      <canvas id="unity-canvas" tabindex="-1" style="background: url('Build/WebGL.jpg') center / cover no-repeat"></canvas>
+      <div id="unity-loading-bar"><div id="unity-progress-bar-empty"><div id="unity-progress-bar-full"></div></div></div>
       <div id="unity-warning"></div>
     </div>
 
@@ -38,51 +29,38 @@
       // Banner avvisi (opzionale)
       var warningBanner = document.querySelector("#unity-warning");
       function unityShowBanner(msg, type) {
-        function updateBannerVisibility() {
-          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
-        }
-        var div = document.createElement('div');
-        div.innerHTML = msg;
-        if (type === 'error') div.style = 'background:#F44336;color:#fff;padding:10px;';
-        else { div.style = 'background:#FFEB3B;padding:10px;'; setTimeout(function(){ warningBanner.removeChild(div); updateBannerVisibility(); }, 5000); }
-        warningBanner.appendChild(div);
-        updateBannerVisibility();
+        function update() { warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'; }
+        var d = document.createElement('div'); d.innerHTML = msg;
+        if (type === 'error') d.style = 'background:#F44336;color:#fff;padding:10px;';
+        else { d.style = 'background:#FFEB3B;padding:10px;'; setTimeout(function(){ warningBanner.removeChild(d); update(); }, 5000); }
+        warningBanner.appendChild(d); update();
       }
 
       var canvas = document.querySelector("#unity-canvas");
       var progressBarFull = document.querySelector("#unity-progress-bar-full");
 
-      // Config con token Unity. Il loader verrà iniettato con %UNITY_WEBGL_LOADER_URL%
+      // Config SENZA token: usa gli stessi nomi generati dalla Minimal
       var config = {
-        dataUrl: "%UNITY_WEBGL_DATA_URL%",
-        frameworkUrl: "%UNITY_WEBGL_FRAMEWORK_URL%",
-        codeUrl: "%UNITY_WEBGL_CODE_URL%",
+        dataUrl: "Build/WebGL.data",
+        frameworkUrl: "Build/WebGL.framework.js",
+        codeUrl: "Build/WebGL.wasm",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "%UNITY_COMPANY_NAME%",
         productName: "%UNITY_PRODUCT_NAME%",
         productVersion: "%UNITY_PRODUCT_VERSION%",
         showBanner: unityShowBanner,
-
-        // 🔧 Fix hitbox / DPR: forza 1 (puoi rimuovere se vuoi HiDPI e non dà problemi)
-        devicePixelRatio: 1
+        devicePixelRatio: 1 // fix hitbox/DPR
       };
+    </script>
 
-      // Sfondo splash (se presente)
-      canvas.style.background = "url('%UNITY_WEBGL_BACKGROUND_URL%') center / cover no-repeat";
-
-      // Carica il loader e avvia l'istanza
-      var script = document.createElement("script");
-      script.src = "%UNITY_WEBGL_LOADER_URL%";
-      script.onload = function() {
-        createUnityInstance(canvas, config, function(progress) {
-          progressBarFull.style.width = (100 * progress) + "%";
-        }).then(function(unityInstance) {
-          document.getElementById("unity-loading-bar").style.display = "none";
-        }).catch(function(message) {
-          alert(message);
-        });
-      };
-      document.body.appendChild(script);
+    <!-- Loader con nome fisso come nella Minimal -->
+    <script src="Build/WebGL.loader.js"></script>
+    <script>
+      createUnityInstance(canvas, config, function(p){
+        progressBarFull.style.width = (100 * p) + "%";
+      }).then(function(){
+        document.getElementById("unity-loading-bar").style.display = "none";
+      }).catch(alert);
     </script>
   </body>
 </html>
