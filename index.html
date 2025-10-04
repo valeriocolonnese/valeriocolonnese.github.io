@@ -55,41 +55,37 @@
     </div>
 
     <script>
-      // Banner avvisi (opzionale)
-      var warningBanner = document.querySelector("#unity-warning");
-      function unityShowBanner(msg, type) {
-        function update() { warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'; }
-        var d = document.createElement('div'); d.innerHTML = msg;
-        if (type === 'error') d.style = 'background:#F44336;color:#fff;padding:10px;';
-        else { d.style = 'background:#FFEB3B;padding:10px;'; setTimeout(function(){ warningBanner.removeChild(d); update(); }, 5000); }
-        warningBanner.appendChild(d); update();
-      }
+	  var warningBanner = document.querySelector("#unity-warning");
+	  function unityShowBanner(msg, type) {
+		function update() { warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'; }
+		var d = document.createElement('div'); d.innerHTML = msg;
+		if (type === 'error') d.style = 'background:#F44336;color:#fff;padding:10px;';
+		else { d.style = 'background:#FFEB3B;padding:10px;'; setTimeout(function(){ warningBanner.removeChild(d); update(); }, 5000); }
+		warningBanner.appendChild(d); update();
+	  }
 
-      var canvas = document.querySelector("#unity-canvas");
-      var progressBarFull = document.querySelector("#unity-progress-bar-full");
+	  var canvas = document.querySelector("#unity-canvas");
+	  var progressBarFull = document.querySelector("#unity-progress-bar-full");
 
-      // Config con valori hardcoded richiesti
-      var config = {
-        dataUrl: "Build/valeriocolonnese.github.io.data",
-        frameworkUrl: "Build/valeriocolonnese.github.io.framework.js",
-        codeUrl: "Build/valeriocolonnese.github.io.wasm",
-        streamingAssetsUrl: "StreamingAssets",
-        companyName: "PowerICT srls",
-        productName: "Dal Bagatto",
-        productVersion: "1.0",
-        showBanner: unityShowBanner,
-        devicePixelRatio: 1 // fix hitbox/DPR
-      };
-    </script>
-
-    <!-- Loader con nome fisso come nella Minimal -->
-    <script src="Build/valeriocolonnese.github.io.loader.js"></script>
-    <script>
-      createUnityInstance(canvas, config, function(p){
-        progressBarFull.style.width = (100 * p) + "%";
-      }).then(function(){
-        document.getElementById("unity-loading-bar").style.display = "none";
-      }).catch(alert);
-    </script>
+	  var config = {
+		dataUrl: "Build/valeriocolonnese.github.io.data.unityweb",
+		frameworkUrl: "Build/valeriocolonnese.github.io.framework.js.unityweb",
+		codeUrl: "Build/valeriocolonnese.github.io.wasm.unityweb",
+		streamingAssetsUrl: "StreamingAssets",
+		companyName: "PowerICT srls",
+		productName: "Dal Bagatto",
+		productVersion: "1.0",
+		showBanner: unityShowBanner,
+		devicePixelRatio: 1
+	  };
+	</script>
+	<script src="Build/valeriocolonnese.github.io.loader.js"></script>
+	<script>
+	  createUnityInstance(canvas, config, function(p){
+		progressBarFull.style.width = (100 * p) + "%";
+	  }).then(function(){
+		document.getElementById("unity-loading-bar").style.display = "none";
+	  }).catch(alert);
+	</script>
   </body>
 </html>
