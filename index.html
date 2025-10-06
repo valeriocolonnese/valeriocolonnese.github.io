@@ -8,84 +8,126 @@
     <!-- favicon PNG -->
     <link rel="icon" href="favicon.png" type="image/png"/>
 
+    <!-- Viewport & touch -->
     <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1, user-scalable=no"/>
+
+    <!-- Preload dei grossi asset .unityweb (richiede corretti header CORS se serviti da CDN) -->
+    <link rel="preload" href="Build/valeriocolonnese.github.io.data.unityweb" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="Build/valeriocolonnese.github.io.framework.js.unityweb" as="fetch" crossorigin="anonymous">
+    <link rel="preload" href="Build/valeriocolonnese.github.io.wasm.unityweb" as="fetch" crossorigin="anonymous">
+
     <style>
-      html, body { margin:0; padding:0; height:100%; }
+      html, body { margin:0; padding:0; height:100%; background:#000; }
       #unity-container { position:fixed; inset:0; }
-      #unity-canvas { display:block; width:100%; height:100%; }
+      #unity-canvas { display:block; width:100%; height:100%; background:#000 url('Build/valeriocolonnese.github.io.jpg') center / cover no-repeat; }
 
       /* Avvisi */
       #unity-warning {
-        position:fixed; left:0; right:0; top:0;
-        z-index:10;
+        position:fixed; left:0; right:0; top:0; z-index:10;
+        font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       }
+      #unity-warning > div { padding:10px; }
 
       /* Loading bar centrata */
       #unity-loading-bar {
-        position:fixed;
-        left:50%; top:50%;
+        position:fixed; left:50%; top:50%;
         transform:translate(-50%, -50%);
-        width:max(220px, 22%);
-        z-index:9;
-        text-align:center;
+        width:min(420px, 60vw); z-index:9; text-align:center;
+        font:13px/1.2 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        color:#ddd;
       }
       #unity-progress-bar-empty {
-        width:100%;
-        height:10px;
-        margin:8px auto;
-        border:1px solid #999;
-        box-sizing:border-box;
+        width:100%; height:10px; margin:8px auto 0;
+        border:1px solid #999; box-sizing:border-box;
+        background:rgba(255,255,255,.06);
       }
       #unity-progress-bar-full {
-        width:0%;
-        height:100%;
-        background:#999;
+        width:0%; height:100%; background:#bbb;
       }
+      #unity-error {
+        position:fixed; left:50%; top:70%;
+        transform:translateX(-50%);
+        max-width:80vw; color:#fff; font:14px/1.4 system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+        text-align:center; display:none;
+      }
+      .sr-only { position:absolute; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; border:0; }
     </style>
   </head>
   <body>
     <div id="unity-container">
-      <canvas id="unity-canvas" tabindex="-1" style="background: url('Build/valeriocolonnese.github.io.jpg') center / cover no-repeat"></canvas>
-      <div id="unity-loading-bar">
-        <div id="unity-progress-bar-empty">
+      <canvas id="unity-canvas" tabindex="-1"></canvas>
+
+      <div id="unity-loading-bar" aria-live="polite" aria-atomic="true">
+        <div>Caricamento… <span id="unity-progress-text" class="sr-only">0%</span></div>
+        <div id="unity-progress-bar-empty" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
           <div id="unity-progress-bar-full"></div>
         </div>
       </div>
-      <div id="unity-warning"></div>
+
+      <div id="unity-warning" role="status" aria-live="polite"></div>
+      <div id="unity-error"></div>
     </div>
 
     <script>
-	  var warningBanner = document.querySelector("#unity-warning");
-	  function unityShowBanner(msg, type) {
-		function update() { warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'; }
-		var d = document.createElement('div'); d.innerHTML = msg;
-		if (type === 'error') d.style = 'background:#F44336;color:#fff;padding:10px;';
-		else { d.style = 'background:#FFEB3B;padding:10px;'; setTimeout(function(){ warningBanner.removeChild(d); update(); }, 5000); }
-		warningBanner.appendChild(d); update();
-	  }
+      // Banner avvisi non bloccante
+      var warningBanner = document.getElementById("unity-warning");
+      function unityShowBanner(msg, type) {
+        function update() { warningBanner.style.display = warningBanner.children.length ? 'block' : 'none'; }
+        var d = document.createElement('div');
+        d.innerHTML = msg;
+        d.style = (type === 'error')
+          ? 'background:#F44336;color:#fff;padding:10px;'
+          : 'background:#FFEB3B;color:#000;padding:10px;';
+        warningBanner.appendChild(d);
+        update();
+        if (type !== 'error') setTimeout(function(){ warningBanner.removeChild(d); update(); }, 5000);
+      }
 
-	  var canvas = document.querySelector("#unity-canvas");
-	  var progressBarFull = document.querySelector("#unity-progress-bar-full");
+      var canvas = document.getElementById("unity-canvas");
+      var loadingBar = document.getElementById("unity-loading-bar");
+      var progressFill = document.getElementById("unity-progress-bar-full");
+      var progressText = document.getElementById("unity-progress-text");
+      var progressRole = document.getElementById("unity-progress-bar-empty");
+      var errorBox = document.getElementById("unity-error");
 
-	  var config = {
-		dataUrl: "Build/valeriocolonnese.github.io.data.unityweb",
-		frameworkUrl: "Build/valeriocolonnese.github.io.framework.js.unityweb",
-		codeUrl: "Build/valeriocolonnese.github.io.wasm.unityweb",
-		streamingAssetsUrl: "StreamingAssets",
-		companyName: "PowerICT srls",
-		productName: "Dal Bagatto",
-		productVersion: "1.0",
-		showBanner: unityShowBanner,
-		devicePixelRatio: 1
-	  };
-	</script>
-	<script src="Build/valeriocolonnese.github.io.loader.js"></script>
-	<script>
-	  createUnityInstance(canvas, config, function(p){
-		progressBarFull.style.width = (100 * p) + "%";
-	  }).then(function(){
-		document.getElementById("unity-loading-bar").style.display = "none";
-	  }).catch(alert);
-	</script>
+      // Config produzione: usa asset .unityweb (brotli) e DPR=1 per input precisi
+      var config = {
+        dataUrl: "Build/valeriocolonnese.github.io.data.unityweb",
+        frameworkUrl: "Build/valeriocolonnese.github.io.framework.js.unityweb",
+        codeUrl: "Build/valeriocolonnese.github.io.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "PowerICT srls",
+        productName: "Dal Bagatto",
+        productVersion: "1.0",
+        showBanner: unityShowBanner,
+        devicePixelRatio: 1
+      };
+    </script>
+
+    <!-- Loader (non .unityweb) deve restare JS normale -->
+    <script src="Build/valeriocolonnese.github.io.loader.js" crossorigin="anonymous"></script>
+    <script>
+      // Avvio istanza Unity
+      createUnityInstance(canvas, config, function (p) {
+        var pc = Math.round(p * 100);
+        progressFill.style.width = pc + "%";
+        progressText.textContent = pc + "%";
+        progressRole.setAttribute("aria-valuenow", pc);
+      }).then(function (unityInstance) {
+        loadingBar.style.display = "none";
+
+        // Gestione perdita contesto (alcuni browser/mobile)
+        canvas.addEventListener("webglcontextlost", function(e){
+          e.preventDefault();
+          unityShowBanner("Il contesto WebGL è stato perso. Ricarica la pagina.", "error");
+        }, false);
+      }).catch(function (err) {
+        console.error(err);
+        loadingBar.style.display = "none";
+        errorBox.style.display = "block";
+        errorBox.textContent = "Errore di inizializzazione: " + (err && err.message ? err.message : err);
+        unityShowBanner("Errore di inizializzazione WebGL.", "error");
+      });
+    </script>
   </body>
 </html>
