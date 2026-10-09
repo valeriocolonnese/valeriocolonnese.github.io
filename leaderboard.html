@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Classifica</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+</head>
+<body>
+    <div id="sky" aria-hidden="true">
+        <div class="sun"><div class="rays"></div><div class="core"></div></div>
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        <div class="cloud c3"></div>
+    </div>
+
+    <div id="leaderboard" class="panel">
+        <h1>🏆 Classifica</h1>
+        <p class="hint">Vince chi scopre il nome provando meno lettere (a parità, conta il tempo).</p>
+        <table>
+            <thead>
+                <tr><th>#</th><th>Nome</th><th>Lettere</th><th>Tempo</th></tr>
+            </thead>
+            <tbody id="leaderboardData">
+                <tr><td colspan="4">Caricamento...</td></tr>
+            </tbody>
+        </table>
+        <div class="actions">
+            <a class="button" href="index.html">Torna al gioco</a>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; V. Colonnese e D. Trambarulo</p>
+    </footer>
+
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script>
+        function escapeHtml(s) {
+            return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+        }
+
+        function formatTime(s) {
+            return `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+        }
+
+        const table = document.getElementById("leaderboardData");
+        if (!leaderboardRef) {
+            table.innerHTML = `<tr><td colspan="4">Classifica non disponibile.</td></tr>`;
+        } else {
+            leaderboardRef.once("value").then((snapshot) => {
+                const entries = Object.values(snapshot.val() || {})
+                    .sort((a, b) => a.tries - b.tries || a.seconds - b.seconds)
+                    .slice(0, 20);
+                if (entries.length === 0) {
+                    table.innerHTML = `<tr><td colspan="4">Ancora nessuno: sii il primo!</td></tr>`;
+                    return;
+                }
+                const medals = ["🥇", "🥈", "🥉"];
+                table.innerHTML = entries.map((e, i) => `
+                    <tr>
+                        <td>${medals[i] || i + 1}</td>
+                        <td>${escapeHtml(e.name)}</td>
+                        <td>${Number(e.tries)}</td>
+                        <td>${formatTime(Number(e.seconds) || 0)}</td>
+                    </tr>`).join("");
+            }).catch((err) => {
+                console.error(err);
+                table.innerHTML = `<tr><td colspan="4">Classifica non disponibile.</td></tr>`;
+            });
+        }
+    </script>
+</body>
+</html>
