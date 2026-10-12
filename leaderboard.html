@@ -56,8 +56,7 @@
         } else {
             leaderboardRef.once("value").then((snapshot) => {
                 const entries = Object.values(snapshot.val() || {})
-                    .sort((a, b) => a.tries - b.tries || a.seconds - b.seconds)
-                    .slice(0, 20);
+                    .sort((a, b) => a.tries - b.tries || a.seconds - b.seconds);
                 if (entries.length === 0) {
                     table.innerHTML = `<tr><td colspan="4">Ancora nessuno: sii il primo!</td></tr>`;
                     return;
