@@ -55,7 +55,7 @@
             messagesRef.on("child_added", (s) => addCard(s.val()));
             messagesRef.once("value", (s) => { if (!s.exists()) loading.textContent = "Ancora nessun messaggio."; });
         } else {
-            [{ message: "Benvenuto piccolo sole!", author: "Esempio" }].forEach(addCard);
+            loading.textContent = "Non è stato possibile caricare i messaggi. Riprova più tardi.";
         }
     </script>
 </body>

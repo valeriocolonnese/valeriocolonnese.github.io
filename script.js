@@ -68,12 +68,6 @@ function skipIntro() {
 document.addEventListener("click", skipIntro, { once: true });
 
 // ---------- Messaggi ----------
-const DEMO = [
-    { message: "Benvenuto piccolo sole! Che tu possa illuminare ogni giorno di mamma e papà.", author: "Zia Anna" },
-    { message: "Auguri! Nova ora ha un fratellino da proteggere 💛", author: "Marco" },
-    { message: "Che gioia immensa, un abbraccio grande a tutti e quattro!", author: "Giulia e Paolo" }
-];
-
 const messages = [];
 const palette = ["#FFE08A", "#FFC46B", "#FFAD5C", "#FFF1B8", "#FFD6A5", "#BDE7F7"];
 
@@ -109,9 +103,6 @@ if (messagesRef) {
             if (messages.length === 1) showRandomMessage();
         }
     });
-} else {
-    messages.push(...DEMO);
-    updateCount();
 }
 setInterval(showRandomMessage, 5000);
 
