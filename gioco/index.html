@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indovina il nome del nascituro!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+</head>
+<body>
+    <!-- Cielo: sole che ruota e nuvolette -->
+    <div id="sky" aria-hidden="true">
+        <div class="sun"><div class="rays"></div><div class="core"></div></div>
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+        <div class="cloud c3"></div>
+    </div>
+
+    <!-- Schermata iniziale -->
+    <div id="popup" class="panel">
+        <h1>Sta arrivando un raggio di sole!</h1>
+        <p>Il cielo è pieno di palloncini, ognuno con una lettera. Scoppiali uno alla volta e scopri il nome del nascituro con meno lettere possibili!</p>
+        <input type="text" id="username" placeholder="Il tuo nome" maxlength="30" autocomplete="name">
+        <button id="startGame">Inizia a giocare</button>
+    </div>
+
+    <!-- Gioco -->
+    <div id="game" class="panel" style="display: none;">
+        <h2>Il nome del nascituro è:</h2>
+        <div id="slots"></div>
+        <div id="stats">
+            <span>Lettere provate: <strong id="tries">0</strong></span>
+            <span id="mascot">🌤️</span>
+            <span>Tempo: <strong id="timer">0:00</strong></span>
+        </div>
+        <div id="balloons"></div>
+        <p class="hint">Tocca un palloncino per provare la sua lettera.</p>
+    </div>
+
+    <!-- Schermata di vittoria -->
+    <div id="winScreen" class="panel" style="display: none;">
+        <p class="pre">Il nome è...</p>
+        <h1 id="bigName"></h1>
+        <p class="meaning" id="meaning"></p>
+        <img id="babyImage" src="images/sole.jpg" alt="Un bimbo che abbraccia il sole">
+        <p>Hai scoperto il nome provando <strong id="finalTries"></strong> lettere in <strong id="finalTime"></strong>!</p>
+        <div class="actions">
+            <a class="button" href="leaderboard.html">Vai alla classifica</a>
+            <button id="playAgain" class="button secondary">Gioca ancora</button>
+        </div>
+    </div>
+
+    <canvas id="confetti" aria-hidden="true"></canvas>
+
+    <footer>
+        <a href="leaderboard.html">Classifica</a>
+        <p>&copy; V. Colonnese e D. Trambarulo</p>
+    </footer>
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

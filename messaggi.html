@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gli auguri per Elio</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body class="day show-title show-content rising">
+    <div id="sky" aria-hidden="true">
+        <div class="sun"><div class="rays"></div><div class="core"></div></div>
+        <div class="cloud c1"></div>
+        <div class="cloud c2"></div>
+    </div>
+
+    <header>
+        <h1 class="page-title">I vostri auguri per Elio</h1>
+        <a class="button secondary" href="index.html">← Torna al sito</a>
+    </header>
+
+    <main class="panel wide" id="all-messages">
+        <p class="hint" id="loading">Caricamento…</p>
+    </main>
+
+    <footer>
+        <p>Danila e Valerio desiderano ringraziare tutti voi per l'affetto dimostrato al piccolo Elio.
+        Ogni vostro augurio è un raggio di sole che scalda il suo cammino.</p>
+    </footer>
+
+    <script>
+        const list = document.getElementById("all-messages");
+        const loading = document.getElementById("loading");
+        function addCard(d) {
+            if (!d || !d.message || !d.author) return;
+            loading.hidden = true;
+            const card = document.createElement("div");
+            card.className = "message-card static";
+            const t = document.createElement("div");
+            t.className = "message-text";
+            t.textContent = d.message;
+            const a = document.createElement("div");
+            a.className = "message-author";
+            a.textContent = "– " + d.author;
+            card.append(t, a);
+            list.prepend(card);
+        }
+        if (messagesRef) {
+            messagesRef.on("child_added", (s) => addCard(s.val()));
+            messagesRef.once("value", (s) => { if (!s.exists()) loading.textContent = "Ancora nessun messaggio."; });
+        } else {
+            [{ message: "Benvenuto piccolo sole!", author: "Esempio" }].forEach(addCard);
+        }
+    </script>
+</body>
+</html>

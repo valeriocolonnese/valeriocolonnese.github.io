@@ -1,4 +1,4 @@
 # valeriocolonnese.github.io
 
-Gioco a tema solare: si scoppiano palloncini con le lettere, una alla volta.
-Il progetto Unity precedente si trova in `dal_bagatto/`.
+Sito per la nascita di Elio: alba sul sito, dati della nascita, messaggi di auguri (Firebase, nodo `elio/messages`) e IBAN per un regalo.
+Il gioco dei palloncini per scoprire il nome si trova in `gioco/`; il progetto Unity precedente in `dal_bagatto/`.

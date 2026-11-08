@@ -1,5 +1,4 @@
-// Stesso progetto Firebase usato per Nova: i dati di questo gioco stanno sotto il nodo "sole/".
-// Se preferisci un progetto separato, sostituisci qui la configurazione.
+// Stesso progetto Firebase usato per Nova e per il gioco: i messaggi di auguri stanno sotto "elio/messages".
 const firebaseConfig = {
     apiKey: "AIzaSyB5AwGxjR4KdTOoD8bh_oKHyOsyaltipOY",
     authDomain: "thename-e2496.firebaseapp.com",
@@ -10,10 +9,10 @@ const firebaseConfig = {
     appId: "1:702531579276:web:dbf50683a73adcaf957aa9"
 };
 
-let leaderboardRef = null;
+let messagesRef = null;
 try {
     firebase.initializeApp(firebaseConfig);
-    leaderboardRef = firebase.database().ref('sole/leaderboard');
+    messagesRef = firebase.database().ref("elio/messages");
 } catch (e) {
-    console.error("Firebase non disponibile:", e);
+    console.warn("Firebase non disponibile, uso messaggi di esempio:", e);
 }

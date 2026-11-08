@@ -3,67 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Indovina il nome del nascituro!</title>
+    <title>Benvenuto Elio!</title>
+    <meta name="description" content="È sorto un nuovo sole: benvenuto Elio!">
+    <meta property="og:title" content="Benvenuto Elio! ☀️">
+    <meta property="og:description" content="È sorto un nuovo sole. Lascia un messaggio di auguri!">
+    <meta property="og:image" content="images/elio.jpg">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☀️</text></svg>">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="firebase-config.js"></script>
 </head>
 <body>
-    <!-- Cielo: sole che ruota e nuvolette -->
+    <!-- Cielo: dall'alba al giorno -->
     <div id="sky" aria-hidden="true">
+        <div class="sky-night"></div>
         <div class="sun"><div class="rays"></div><div class="core"></div></div>
         <div class="cloud c1"></div>
         <div class="cloud c2"></div>
         <div class="cloud c3"></div>
+        <div class="horizon"></div>
     </div>
 
-    <!-- Schermata iniziale -->
-    <div id="popup" class="panel">
-        <h1>Sta arrivando un raggio di sole!</h1>
-        <p>Il cielo è pieno di palloncini, ognuno con una lettera. Scoppiali uno alla volta e scopri il nome del nascituro con meno lettere possibili!</p>
-        <input type="text" id="username" placeholder="Il tuo nome" maxlength="30" autocomplete="name">
-        <button id="startGame">Inizia a giocare</button>
-    </div>
+    <header>
+        <h1 id="intro-text">All'alba di un giorno speciale è sorto un piccolo sole…</h1>
+        <h2 id="welcome">Benvenuto Elio!</h2>
+        <p id="meaning">Elio, dal greco <em>Hḗlios</em>: il Sole.<br>Dopo la nostra stella Nova, è arrivato il sole a illuminare le nostre giornate.</p>
+    </header>
 
-    <!-- Gioco -->
-    <div id="game" class="panel" style="display: none;">
-        <h2>Il nome del nascituro è:</h2>
-        <div id="slots"></div>
-        <div id="stats">
-            <span>Lettere provate: <strong id="tries">0</strong></span>
-            <span id="mascot">🌤️</span>
-            <span>Tempo: <strong id="timer">0:00</strong></span>
-        </div>
-        <div id="balloons"></div>
-        <p class="hint">Tocca un palloncino per provare la sua lettera.</p>
-    </div>
+    <main id="content">
+        <section class="panel photo">
+            <img src="images/elio.jpg" alt="Elio">
+        </section>
 
-    <!-- Schermata di vittoria -->
-    <div id="winScreen" class="panel" style="display: none;">
-        <p class="pre">Il nome è...</p>
-        <h1 id="bigName"></h1>
-        <p class="meaning" id="meaning"></p>
-        <img id="babyImage" src="images/sole.jpg" alt="Un bimbo che abbraccia il sole">
-        <p>Hai scoperto il nome provando <strong id="finalTries"></strong> lettere in <strong id="finalTime"></strong>!</p>
-        <div class="actions">
-            <a class="button" href="leaderboard.html">Vai alla classifica</a>
-            <button id="playAgain" class="button secondary">Gioca ancora</button>
-        </div>
-    </div>
+        <section class="panel" id="info">
+            <h2>Elio Colonnese</h2>
+            <dl>
+                <div><dt>📅 Data</dt><dd id="info-data"></dd></div>
+                <div><dt>🕐 Ora</dt><dd id="info-ora"></dd></div>
+                <div><dt>⚖️ Peso</dt><dd id="info-peso"></dd></div>
+                <div><dt>📏 Altezza</dt><dd id="info-altezza"></dd></div>
+            </dl>
+        </section>
 
-    <canvas id="confetti" aria-hidden="true"></canvas>
+        <section class="panel" id="messages">
+            <h2>☀️ I vostri auguri</h2>
+            <p class="hint" id="messages-count"></p>
+            <div id="messages-rotator"></div>
+            <p class="hint" id="messages-empty">Sii il primo a lasciare un augurio!</p>
+            <a class="button secondary" href="messaggi.html">Leggi tutti i messaggi</a>
+        </section>
 
-    <footer>
-        <a href="leaderboard.html">Classifica</a>
-        <p>&copy; V. Colonnese e D. Trambarulo</p>
-    </footer>
+        <section class="panel" id="form">
+            <h2>📩 Lascia un messaggio di auguri</h2>
+            <form id="message-form">
+                <label for="message-input">Messaggio</label>
+                <textarea id="message-input" rows="4" maxlength="1000" required></textarea>
+                <label for="name-input">Il tuo nome</label>
+                <input type="text" id="name-input" maxlength="60" autocomplete="name" required>
+                <button type="submit">Invia</button>
+                <p class="hint" id="form-feedback" role="status"></p>
+            </form>
+        </section>
 
-    <!-- Firebase -->
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-    <script src="firebase-config.js"></script>
+        <section class="panel" id="gift">
+            <h2>☀️ Tanti piccoli raggi fanno un sole</h2>
+            <p>Se vi fa piacere fare un regalo a Elio, ogni pensiero, grande o piccolo, ci aiuterà con le cose che gli serviranno davvero, giorno dopo giorno.</p>
+            <p class="iban" id="iban-code"></p>
+            <p class="hint">Intestato a <span id="iban-owner"></span><br>Causale: Regalo per Elio</p>
+            <button type="button" id="copy-iban">Copia IBAN</button>
+            <p class="thanks">Grazie di cuore,<br>Danila, Valerio e Nova</p>
+        </section>
+    </main>
+
     <script src="script.js"></script>
 </body>
 </html>
