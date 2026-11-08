@@ -165,7 +165,7 @@ body.show-content #content { opacity: 1; transform: none; }
         grid-template-columns: 1fr 1fr;
         align-items: start;
     }
-    .photo { grid-row: span 2; }
+    .photo { grid-row: span 4; }
 }
 
 .panel {
@@ -181,7 +181,7 @@ body.show-content #content { opacity: 1; transform: none; }
 
 h2 { color: var(--deep); margin: 0.2em 0 0.6em; font-size: 1.4rem; }
 
-.photo { padding: 10px; }
+.photo { padding: 10px; display: grid; gap: 10px; }
 .photo img {
     display: block;
     width: 100%;
